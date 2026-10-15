@@ -476,14 +476,41 @@
   }
 
   var eventBox = root.querySelector('[data-bb-events-src]');
-  if (eventBox) readFeed(eventBox.getAttribute('data-bb-events-src'), function (d) {
+  var applyEvents = function (d) {
     if (!d || !Array.isArray(d.items)) return;
     var items = d.items.filter(function(e){return e && typeof e.title === 'string' && safeHttps(e.href,['beautyblossom.kr','www.beautyblossom.kr']) && safeHttps(e.image,['cdn.imweb.me']);});
     if (!items.length || items.length !== d.items.length) return;
     var mq=eventBox.querySelector('[data-bb-marquee]'),track=mq.querySelector('.bb-mq__track'),frag=document.createDocumentFragment();
-    items.forEach(function(e){var item=document.createElement('div'),a=document.createElement('a'),im=document.createElement('img');item.className='bb-mq__item';a.className='bb-evcard';a.href=e.href;im.src=e.image;im.alt=e.title;im.loading='lazy';im.decoding='async';a.appendChild(im);item.appendChild(a);frag.appendChild(item);});
+    items.forEach(function(e){var item=document.createElement('li'),a=document.createElement('a'),im=document.createElement('img');item.className='bb-mq__item';a.className='bb-evcard';a.href=e.href;im.src=e.image;im.alt=e.title;im.loading='lazy';im.decoding='async';a.appendChild(im);item.appendChild(a);frag.appendChild(item);});
     track.replaceChildren(frag);eventBox.setAttribute('data-bb-feed-updated',d.updatedAt||'');if(!reduce)setupMarquee(mq);
-  });
+  };
+  if (eventBox) {
+    var eventFallback=function(){readFeed(eventBox.getAttribute('data-bb-events-src'),applyEvents);};
+    if (['beautyblossom.kr','www.beautyblossom.kr','beautyblossom.imweb.me'].indexOf(location.hostname)!==-1) {
+      // Read the current first-party board directly; a proxy's stale cache cannot delay new event covers.
+      var eventsController=typeof AbortController!=='undefined'?new AbortController():null;
+      var eventsTimeout=eventsController?setTimeout(function(){eventsController.abort();},12000):null;
+      var items=[],seen={},boardPages=[];
+      var readEventPage=function(page){return fetch('/22'+(page>1?'?page='+page:''),{cache:'no-cache',signal:eventsController?eventsController.signal:undefined}).then(function(r){if(!r.ok)throw Error('Board unavailable');return r.text();}).then(function(html){
+        var doc=new DOMParser().parseFromString(html,'text/html'),board=doc.getElementById('post_card_b20250122d2334b98253e7');
+        if(!board)throw Error('Board structure unavailable');
+        Array.prototype.forEach.call(board.querySelectorAll('a.post_link_wrap'),function(a){
+          var url=new URL(a.getAttribute('href'),'https://beautyblossom.kr/22'),id=url.searchParams.get('idx');
+          var thumb=a.querySelector('.card-thumbnail-wrap'),match=thumb&&/background-image\s*:\s*url\(\s*["']?([^"')]+)["']?\s*\)/i.exec(thumb.getAttribute('style')||'');
+          var image=match?match[1]:a.querySelector('img')?.getAttribute('src'),title=a.querySelector('.title')?.textContent.replace(/\s+/g,' ').trim().replace(/\s+N$/,'');
+          if(id&&!seen[id]&&title&&safeHttps(image,['cdn.imweb.me'])&&url.hostname==='beautyblossom.kr'){seen[id]=true;items.push({title:title,image:image,href:url.href});}
+        });
+        if(page===1)Array.prototype.forEach.call(doc.querySelectorAll('a[href*="page="]'),function(a){var u=new URL(a.getAttribute('href'),'https://beautyblossom.kr/22'),p=Number(u.searchParams.get('page'));if(u.hostname==='beautyblossom.kr'&&/^\/22\/?$/.test(u.pathname)&&Number.isInteger(p)&&p>1&&p<=10&&boardPages.indexOf(p)===-1)boardPages.push(p);});
+      });};
+      readEventPage(1).then(function(){
+        if(!items.length)throw Error('No valid current event covers');
+        boardPages.sort(function(a,b){return a-b;});var next=function(){if(items.length>=20||!boardPages.length)return Promise.resolve();return readEventPage(boardPages.shift()).then(next);};
+        return next()['catch'](function(){/* Keep the fresh first page if an additional page is temporarily unavailable. */});
+      }).then(function(){
+        applyEvents({items:items.slice(0,20),updatedAt:new Date().toISOString()});eventBox.setAttribute('data-bb-event-source','same-origin-board');
+      })['catch'](eventFallback)['finally'](function(){if(eventsTimeout)clearTimeout(eventsTimeout);});
+    } else eventFallback();
+  }
 
   // 유튜브 필름 스트립: 매주 갱신되는 목록 파일을 읽어 새 영상이 있으면 카드를 다시 만든다
   var filmBox = root.querySelector('[data-bb-film-src]');
