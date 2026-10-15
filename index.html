@@ -274,6 +274,11 @@
 #bb-main .bb-mq__track{display:flex;width:max-content}
 #bb-main .bb-mq.is-run .bb-mq__track{animation:bb-marquee var(--bb-mq-dur,50s) linear infinite}
 #bb-main .bb-mq.is-run:focus-within .bb-mq__track{animation-play-state:paused}
+@supports selector(:has(:focus-visible)) {
+  @media (hover:none) and (pointer:coarse) {
+    #bb-main .bb-mq.is-run:focus-within:not(:has(:focus-visible)) .bb-mq__track{animation-play-state:running}
+  }
+}
 @media(hover:hover) and (pointer:fine){#bb-main .bb-mq.is-run:hover .bb-mq__track{animation-play-state:paused}}
 @keyframes bb-marquee{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-1 * var(--bb-mq-dist,0px)),0,0)}}
 #bb-main .bb-mq__item{flex:none;padding-right:30px}
@@ -434,6 +439,21 @@
 
   var video = root.querySelector('.bb-hero__video');
   var toggle = root.querySelector('.bb-hero__toggle');
+  var heroUserPaused = false;
+  function prepareInlineVideo(v) {
+    v.muted = true; v.defaultMuted = true; v.playsInline = true;
+    v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
+  }
+  function requestVideoPlay(v, failed) {
+    if (v.bbPlayPending) return;
+    prepareInlineVideo(v);
+    var pr;
+    try { pr = v.play(); } catch (e) { if (failed) failed(); return; }
+    if (pr && pr.then) {
+      v.bbPlayPending = true;
+      pr.then(function () { v.bbPlayPending = false; }, function () { v.bbPlayPending = false; if (failed) failed(); });
+    }
+  }
   if (video) {
     var mobile = window.matchMedia('(max-width: 640px)').matches;
     if (mobile) video.setAttribute('poster', video.getAttribute('data-poster-m'));
@@ -441,7 +461,7 @@
       video.removeAttribute('autoplay');
       video.setAttribute('poster', video.getAttribute(mobile ? 'data-still-m' : 'data-still-d'));
     }
-    video.muted = true;
+    prepareInlineVideo(video);
     video.src = video.getAttribute(mobile ? 'data-src-m' : 'data-src-d');
     var setPaused = function (p) {
       if (!toggle) return;
@@ -451,12 +471,14 @@
     if (reduce) {
       setPaused(true);
     } else {
-      var playing = video.play();
-      if (playing && playing.catch) playing.catch(function () { setPaused(true); });
+      requestVideoPlay(video, function () { setPaused(true); });
     }
+    video.addEventListener('playing', function () { setPaused(false); });
+    video.addEventListener('pause', function () { setPaused(true); });
     if (toggle) {
       toggle.addEventListener('click', function () {
-        if (video.paused) { video.play(); setPaused(false); } else { video.pause(); setPaused(true); }
+        if (video.paused) { heroUserPaused = false; requestVideoPlay(video, function () { setPaused(true); }); }
+        else { heroUserPaused = true; video.pause(); }
       });
     }
   }
@@ -631,8 +653,7 @@
     var playIfVisible = function (v) {
       if (reduce || !v.getAttribute('data-visible')) return;
       if (!v.getAttribute('src')) v.setAttribute('src', v.getAttribute('data-src'));
-      var pr = v.play();
-      if (pr && pr['catch']) pr['catch'](function () {});
+      requestVideoPlay(v);
     };
     var tune = function (tvEl, step) {
       if (!reels.length) return;
@@ -690,6 +711,20 @@
       window.addEventListener('resize', observeVids);
     }
   }
+
+  // Mobile autoplay can be denied until a real gesture; retry visible media without overriding a manual pause.
+  function resumeVisibleMedia(ev) {
+    if (reduce || document.hidden) return;
+    if (ev && ev.target && ev.target.closest && ev.target.closest('.bb-hero__toggle')) return;
+    if (video && !heroUserPaused && video.paused) {
+      var rect = video.getBoundingClientRect();
+      if (rect.bottom > 0 && rect.top < innerHeight) requestVideoPlay(video, function () { setPaused(true); });
+    }
+    if (tvList) tvList.querySelectorAll('video[data-visible]').forEach(function (v) { playIfVisible(v); });
+  }
+  document.addEventListener('PointerEvent' in window ? 'pointerup' : 'touchend', resumeVisibleMedia, { passive: true });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) resumeVisibleMedia(); });
+  window.addEventListener('pageshow', function () { resumeVisibleMedia(); });
 
   var grows = root.querySelectorAll('[data-bb-grow]');
   var decos = root.querySelectorAll('[data-bb-px]');
