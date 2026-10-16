@@ -1201,3 +1201,38 @@
     if (h1) h1.className += ' is-tt';
   }
 })();</script>
+
+<script id="bb-treatment-sync">/* Keep main treatment links aligned with the site's published header navigation. */
+(function(){
+  var root=document.getElementById('bb-main');if(!root)return;
+  var section=root.querySelector('#bb-treatments'),table=document.querySelector('#bbFullMenu .menu-table,#bbFullMenu .bb-menu-table,.full-menu .menu-table,.full-menu .bb-menu-table');
+  if(!section||!table)return;
+  var allowed=new Set([location.hostname]);
+  var origin={KO:'https://beautyblossom.kr',EN:'https://en.beautyblossom.kr',JP:'https://jp.beautyblossom.kr',CN:'https://cn.beautyblossom.kr',TW:'https://tw.beautyblossom.kr',TH:'https://www.beautyblossomth.kr',HK:'https://hk.beautyblossom.kr'}[root.getAttribute('data-country')||'KO'];
+  if(origin)allowed.add(new URL(origin).hostname);
+  function sync(){
+    section.querySelectorAll('[data-bb-cat]').forEach(function(cat){
+      var key=cat.getAttribute('data-bb-cat');if(!/^c[0-6]$/.test(key))return;
+      var col=key.slice(1),cell=table.querySelector('td[data-col="'+col+'"]');if(!cell)return;
+      var items=[],seen=new Set();
+      cell.querySelectorAll('a[href]').forEach(function(a){
+        var hidden=a.closest('[hidden],[aria-hidden="true"],[data-menu-hidden="true"]');if(hidden&&hidden!==cell&&cell.contains(hidden))return;
+        var label=a.textContent.replace(/\s+/g,' ').trim();if(!label)return;
+        try{var u=new URL(a.getAttribute('href'),origin||location.origin);if(!/^https?:$/.test(u.protocol)||!allowed.has(u.hostname)||u.hash||u.pathname==='/')return;
+          var id=u.pathname.replace(/\/$/,'')+u.search;if(seen.has(id))return;seen.add(id);items.push({label:label,url:u.href});
+        }catch(e){}
+      });
+      var list=cat.querySelector('.bb-tx__list');if(!list)return;
+      cat.hidden=!items.length;var categoryFilter=section.querySelector('[data-bb-filter] [data-key="'+key+'"]');if(categoryFilter)categoryFilter.hidden=!items.length;
+      var sig=JSON.stringify(items);if(list.getAttribute('data-nav-signature')===sig)return;
+      var fragment=document.createDocumentFragment();items.forEach(function(item){var li=document.createElement('li'),a=document.createElement('a');a.href=item.url;a.textContent=item.label;li.appendChild(a);fragment.appendChild(li)});
+      list.replaceChildren(fragment);list.setAttribute('data-nav-signature',sig);
+      var heading=table.querySelector('th[data-col="'+col+'"]'),label=heading&&heading.textContent.trim();
+      if(label){var title=cat.querySelector('.bb-tx__head h3 a,.bb-tx__head h3');if(title)title.textContent=label;var filter=section.querySelector('[data-bb-filter] [data-key="'+key+'"]');if(filter)filter.textContent=label;}
+    });
+    section.setAttribute('data-bb-menu-source','published-header');
+  }
+  sync();document.addEventListener('DOMContentLoaded',sync,{once:true});window.addEventListener('load',sync,{once:true});
+  if(window.MutationObserver)new MutationObserver(sync).observe(table,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['href','hidden','aria-hidden','data-menu-hidden']});
+})();
+</script>
