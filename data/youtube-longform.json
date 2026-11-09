@@ -4,6 +4,22 @@
  "source": "youtube-data-api",
  "videos": [
   {
+   "id": "UWzkb7BzKRs",
+   "title": "울쎄라 1000샷, 볼에 다 쓰는 건가요?｜실제 시술로 보는 질문 6가지",
+   "published": "2026-11-07T11:00:04Z",
+   "duration": "3:29",
+   "thumb": "https://i.ytimg.com/vi/UWzkb7BzKRs/maxresdefault.jpg",
+   "url": "https://www.youtube.com/watch?v=UWzkb7BzKRs"
+  },
+  {
+   "id": "EYVjIAXDX1w",
+   "title": "거울 보자마자 “우와!” 유지인대 리프팅 시술 현장｜K-뷰티 원정대 EP.5",
+   "published": "2026-11-04T09:45:10Z",
+   "duration": "6:07",
+   "thumb": "https://i.ytimg.com/vi/EYVjIAXDX1w/maxresdefault.jpg",
+   "url": "https://www.youtube.com/watch?v=EYVjIAXDX1w"
+  },
+  {
    "id": "5d6YJld7e6A",
    "title": "피부 좋은 사람들은 오히려 '이걸' 안 합니다｜7가지 공통점",
    "published": "2026-10-17T08:30:26Z",
@@ -146,24 +162,8 @@
    "duration": "5:16",
    "thumb": "https://i.ytimg.com/vi/hPkwLdqysJU/maxresdefault.jpg",
    "url": "https://www.youtube.com/watch?v=hPkwLdqysJU"
-  },
-  {
-   "id": "YjZy6tnHf2o",
-   "title": "포텐자 얼마나 받아야 제대로 효과가 있는걸까?",
-   "published": "2026-03-09T03:00:36Z",
-   "duration": "3:06",
-   "thumb": "https://i.ytimg.com/vi/YjZy6tnHf2o/maxresdefault.jpg",
-   "url": "https://www.youtube.com/watch?v=YjZy6tnHf2o"
-  },
-  {
-   "id": "xaohom7-hOw",
-   "title": "합정 피부과 VIP ROOM OPEN | 프라이빗 1:1 시술 공간 공개 🌸 뷰티블라썸의원",
-   "published": "2026-03-04T05:45:14Z",
-   "duration": "0:37",
-   "thumb": "https://i.ytimg.com/vi/xaohom7-hOw/maxresdefault.jpg",
-   "url": "https://www.youtube.com/watch?v=xaohom7-hOw"
   }
  ],
- "updated": "2026-10-19T00:36:23.670Z",
+ "updated": "2026-11-09T02:08:17.779Z",
  "stale": false
 }
