@@ -84,6 +84,44 @@ for name, url in sorted(wanted.items()):
         manifest[url] = {'file': name + '.webp', 'orig': [orig[0], orig[1], len(raw)], 'opt': [size[0], size[1], len(data)]}
     time.sleep(0.3)
 
+# YouTube film-strip thumbnails: 640w / 960w WebP from maxresdefault (the homepage shows them at
+# 400 CSS px on desktop and 70vw on phones; srcset picks the size, the original stays the 1280w entry).
+YT = os.path.join(OPT, 'yt'); os.makedirs(YT, exist_ok=True)
+yt_ids = set()
+try:
+    data = json.load(open(os.path.join(ROOT, 'data', 'youtube-longform.json'), encoding='utf-8'))
+    yt_ids |= {v['id'] for v in data.get('videos', []) if re.fullmatch(r'[\w-]{11}', str(v.get('id', '')))}
+except Exception as e:
+    print(f'  youtube json unavailable: {e}')
+try:  # videos still on the live homepage (the static strip rotates slower than the weekly list)
+    html = get('https://beautyblossom.kr/', 30).decode('utf-8', 'replace')
+    yt_ids |= set(re.findall(r'i\.ytimg\.com/vi(?:_webp)?/([\w-]{11})/maxresdefault', html))
+except Exception as e:
+    print(f'  homepage unavailable: {e}')
+yt_added = []
+for vid in sorted(yt_ids):
+    targets = [(640, os.path.join(YT, f'{vid}-640.webp')), (960, os.path.join(YT, f'{vid}-960.webp'))]
+    if all(os.path.exists(p) for _, p in targets):
+        continue
+    try:
+        raw = get(f'https://i.ytimg.com/vi/{vid}/maxresdefault.jpg')
+        im = Image.open(io.BytesIO(raw)); im.load(); im = im.convert('RGB')
+    except Exception as e:
+        print(f'  skip yt {vid}: {e}')
+        continue
+    for w, p in targets:
+        if os.path.exists(p):
+            continue
+        r = im.resize((w, max(1, round(im.size[1] * w / im.size[0]))), Image.LANCZOS) if im.size[0] > w else im
+        out = io.BytesIO(); r.save(out, 'WEBP', quality=QUALITY, method=6)
+        print(f'  + yt/{os.path.basename(p)} {r.size[0]}x{r.size[1]} {len(out.getvalue())}B')
+        if not dry:
+            with open(p, 'wb') as f:
+                f.write(out.getvalue())
+    yt_added.append(vid)
+    time.sleep(0.3)
+print(f'youtube ids {len(yt_ids)} | converted now {len(yt_added)}')
+
 if not dry:
     names = sorted(f[:-5] for f in os.listdir(OPT) if f.endswith('.webp'))
     json.dump(manifest, open(manifest_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
