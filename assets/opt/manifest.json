@@ -4431,5 +4431,161 @@
    900,
    54248
   ]
+ },
+ "https://cdn.imweb.me/thumbnail/20261117/0b2a05d96b052.jpg": {
+  "file": "0b2a05d96b052.webp",
+  "orig": [
+   1067,
+   1334,
+   182716
+  ],
+  "opt": [
+   720,
+   900,
+   42816
+  ]
+ },
+ "https://cdn.imweb.me/thumbnail/20261117/3121997473ddc.jpg": {
+  "file": "3121997473ddc.webp",
+  "orig": [
+   747,
+   934,
+   98648
+  ],
+  "opt": [
+   720,
+   900,
+   39890
+  ]
+ },
+ "https://cdn.imweb.me/thumbnail/20261117/328ab174f50fb.jpg": {
+  "file": "328ab174f50fb.webp",
+  "orig": [
+   1067,
+   1334,
+   168464
+  ],
+  "opt": [
+   720,
+   900,
+   37762
+  ]
+ },
+ "https://cdn.imweb.me/thumbnail/20261117/33b04e0205e1e.jpg": {
+  "file": "33b04e0205e1e.webp",
+  "orig": [
+   747,
+   934,
+   90751
+  ],
+  "opt": [
+   720,
+   900,
+   34324
+  ]
+ },
+ "https://cdn.imweb.me/thumbnail/20261117/36112a679370f.jpg": {
+  "file": "36112a679370f.webp",
+  "orig": [
+   747,
+   934,
+   103908
+  ],
+  "opt": [
+   720,
+   900,
+   37556
+  ]
+ },
+ "https://cdn.imweb.me/thumbnail/20261117/3ce6dba9b6851.jpg": {
+  "file": "3ce6dba9b6851.webp",
+  "orig": [
+   1067,
+   1334,
+   171498
+  ],
+  "opt": [
+   720,
+   900,
+   38588
+  ]
+ },
+ "https://pub-7ab1b86fbb9c4442971f0a3a7b5adf9f.r2.dev/beautyblossom/promotions/nad/6e21a0aa-e829-498e-a22e-9d9300e795b4-nad-th-1.jpg": {
+  "file": "6e21a0aa-e829-498e-a22e-9d9300e795b4-nad-th-1.webp",
+  "orig": [
+   1080,
+   1350,
+   141579
+  ],
+  "opt": [
+   720,
+   900,
+   38130
+  ]
+ },
+ "https://cdn.imweb.me/thumbnail/20261117/75ecfe17eaafc.jpg": {
+  "file": "75ecfe17eaafc.webp",
+  "orig": [
+   747,
+   934,
+   102886
+  ],
+  "opt": [
+   720,
+   900,
+   38816
+  ]
+ },
+ "https://cdn.imweb.me/thumbnail/20261117/bfd8c8ab07354.jpg": {
+  "file": "bfd8c8ab07354.webp",
+  "orig": [
+   747,
+   934,
+   103932
+  ],
+  "opt": [
+   720,
+   900,
+   38210
+  ]
+ },
+ "https://cdn.imweb.me/thumbnail/20261117/cde620e2dbb60.jpg": {
+  "file": "cde620e2dbb60.webp",
+  "orig": [
+   1067,
+   1334,
+   170322
+  ],
+  "opt": [
+   720,
+   900,
+   39354
+  ]
+ },
+ "https://pub-7ab1b86fbb9c4442971f0a3a7b5adf9f.r2.dev/beautyblossom/events/nad-plus-iv-drip-2026/e9fde951-d1d5-4566-916f-6e4fa3efb7a9-nad-th-1.jpg": {
+  "file": "e9fde951-d1d5-4566-916f-6e4fa3efb7a9-nad-th-1.webp",
+  "orig": [
+   1080,
+   1350,
+   141579
+  ],
+  "opt": [
+   720,
+   900,
+   38130
+  ]
+ },
+ "https://cdn.beautyblossomth.kr/hk/common/nad-hk-1-a2.jpg": {
+  "file": "nad-hk-1-a2.webp",
+  "orig": [
+   1080,
+   1350,
+   154792
+  ],
+  "opt": [
+   720,
+   900,
+   42152
+  ]
  }
 }
