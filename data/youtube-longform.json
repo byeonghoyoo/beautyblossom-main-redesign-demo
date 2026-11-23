@@ -4,6 +4,14 @@
  "source": "youtube-data-api",
  "videos": [
   {
+   "id": "repZWsTh5Zw",
+   "title": "첫 리프팅, 울쎄라부터? 피부과 원장이 직접 뽑은 리프팅 1티어",
+   "published": "2026-11-22T11:00:29Z",
+   "duration": "12:20",
+   "thumb": "https://i.ytimg.com/vi/repZWsTh5Zw/maxresdefault.jpg",
+   "url": "https://www.youtube.com/watch?v=repZWsTh5Zw"
+  },
+  {
    "id": "UWzkb7BzKRs",
    "title": "울쎄라 1000샷, 볼에 다 쓰는 건가요?｜실제 시술로 보는 질문 6가지",
    "published": "2026-11-07T11:00:04Z",
@@ -154,16 +162,8 @@
    "duration": "3:39",
    "thumb": "https://i.ytimg.com/vi/foPd3MGtebQ/maxresdefault.jpg",
    "url": "https://www.youtube.com/watch?v=foPd3MGtebQ"
-  },
-  {
-   "id": "hPkwLdqysJU",
-   "title": "볼 패임 걱정 없는 리프팅? 소프웨이브 리얼 체험기 | 뷰티블라썸",
-   "published": "2026-03-15T08:30:32Z",
-   "duration": "5:16",
-   "thumb": "https://i.ytimg.com/vi/hPkwLdqysJU/maxresdefault.jpg",
-   "url": "https://www.youtube.com/watch?v=hPkwLdqysJU"
   }
  ],
- "updated": "2026-11-09T02:08:17.779Z",
+ "updated": "2026-11-23T03:15:44.726Z",
  "stale": false
 }
